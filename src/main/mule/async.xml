@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e5214caa-9ec5-4ea3-9a65-7bc8f0ed602f" >
+		<http:listener-connection host="localhost" port="8082" />
+	</http:listener-config>
+	<flow name="newflow" doc:id="ffb508a2-87ae-4fa4-8f06-c0524b207f62" >
+		<http:listener doc:name="Listener" doc:id="cf64f666-da97-4bc9-be78-dd80b462a90d" config-ref="HTTP_Listener_config" path="/async"/>
+		<set-payload value='#["hello"]' doc:name="Set Payload" doc:id="600218a2-c52b-4ea3-bf24-2ef4ff0cb05f" />
+		<async doc:name="Async" doc:id="213ffa0a-f531-4169-b4c8-8a7a41cc414e" >
+			<choice doc:name="Choice" doc:id="b3e9a364-a9c7-4c55-8849-28b506429315">
+			<when expression='#[payload == "hello"]'>
+					<logger level="INFO" doc:name="Logger" doc:id="6050fa80-229e-4111-99b4-fb8166496eb6" message="response...#[payload]"/>
+					<set-variable value='#["happi dad"]' doc:name="Set Variable" doc:id="93c5e230-2b98-4515-ae77-efa05dab1b0a" variableName="hello"/>
+					<logger level="INFO" doc:name="Logger" doc:id="6a4aa248-7b9b-4c4a-b63a-74cc67062dec" message="after variable..#[vars.hello]"/>
+				</when>
+				<otherwise >
+					<logger level="INFO" doc:name="Logger" doc:id="d668d209-133d-4392-b25a-805e6eee30fc" message="not payload.........#[payload]"/>
+				</otherwise>
+		</choice>
+		</async>
+		<set-payload value='#["happi"]' doc:name="Set Payload" doc:id="993c6a0b-1285-4e88-867c-c631e934820a" />
+		<logger level="INFO" doc:name="Logger" doc:id="8038608f-7a19-4f7d-afa1-b6f174c052e4" message="final resoonse.#[payload]"/>
+	</flow>
+</mule>
